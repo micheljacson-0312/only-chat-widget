@@ -1,9 +1,16 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { verifyAccessToken } from "@/lib/auth";
+import { verifyAccessTokenEdge } from "@/lib/auth-edge";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  // The Socket.IO handshake never sends an `Authorization: Bearer` header
+  // (the token lives in `handshake.auth.token`), so it must bypass this
+  // middleware entirely. Auth for the socket is enforced inside the handler.
+  if (pathname.startsWith("/api/socket")) {
+    return NextResponse.next();
+  }
 
   const publicRoutes = [
     "/api/auth/login/step1",
@@ -51,7 +58,7 @@ export function middleware(request: NextRequest) {
   }
 
   const token = authHeader.split(" ")[1];
-  const payload = verifyAccessToken(token);
+  const payload = await verifyAccessTokenEdge(token);
 
   if (!payload) {
     return NextResponse.json(

@@ -13,5 +13,11 @@
   },
   "devDependencies": {
     "concurrently": "^9.0.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.8.0",
+    "jose": "^6.2.3",
+    "next": "^16.2.7",
+    "socket.io": "^4.8.3"
   }
 }
