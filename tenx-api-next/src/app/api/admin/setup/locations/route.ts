@@ -28,7 +28,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       success: true,
       data: {
-        items: items.map((l: any) => ({
+        items: items.map(l => ({
             ...l,
             locationTypeName: l.locationType.locationTypeName
         })),
